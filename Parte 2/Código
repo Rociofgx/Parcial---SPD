@@ -1,3 +1,6 @@
+//Rocío Gómez
+//Link al arduino https://www.tinkercad.com/things/4V3IpgrkTf7-segunda-parte-arduino/editel?sharecode=_P_RaZtPehFyl-r7bR4qIpv5Ga5wqvJ5VrdzujCquEE
+
 // C++ code
 //Se definen las entradas a utilizar
 #define a 10
@@ -12,20 +15,17 @@
 #define ALLOF 0
 #define RESTA_PULSADOR 2
 #define SUMA_PULSADOR 3
-
 #define SLIDER 13
-
 //Se declaran las variables que se van a 
 //utilizar para controlar el comportamiento del contador y 
 //la detección de presion de botones
 int contador = 0;
 int suma = 1;
 int resta = 1;
-
 int suma_anterior = 0;
-
 int resta_anterior = 0;
 int contador_primos = 3;
+
 
 void setup(){
   pinMode(a, OUTPUT);
@@ -40,67 +40,82 @@ void setup(){
   pinMode(RESTA_PULSADOR,INPUT_PULLUP);
   pinMode(SUMA_PULSADOR,INPUT_PULLUP);
   
+  
   pinMode(SLIDER,INPUT_PULLUP);
   Serial.begin(9600);
 }
 //LOOP
 
-
 void loop()
 { 
-  if(digitalRead(SLIDER) == 0)
- {
-  int pressed = keypressed();
-  if(pressed == SUMA_PULSADOR)
+  if(digitalRead(SLIDER) == 0) 
+   //Slider indica que mientras esté en 0, hace el contador normal
+    
   {
-   contador++;
-   if (contador > 99)
+    int pressed = keypressed();
+    if (pressed == SUMA_PULSADOR)
     {
-     contador = 0; 
+      
+      contador++;
+      if (contador > 99)
+      {
+        contador = 0; 
+      }
     }
-    
-  }
-   if(pressed == RESTA_PULSADOR)
-   { 
-     contador--;
-     if (contador < 1)
-     {
-       contador = 99;
-     }
-  }
+    else if (pressed == RESTA_PULSADOR)
+    {
+      
+      contador--;
+      if (contador < 1)
+      {
+        contador = 99;
+      }
+    }
 
-  imprimirContador(contador);
-    
+    imprimirContador(contador);
   }
   else
+    //Sino, hace el número primo
   { 
     int pressed = keypressed();
-  if(pressed == SUMA_PULSADOR)
-  {
-   contador_primos++;
-    
-    while (primo(contador_primos) == false)
-  { 
- 	contador_primos++;
+    if (pressed == SUMA_PULSADOR)
+    {
+//El while, verifica si el contador_primos utiliza la función bool primo
+     //para encontrar al número primo. Luego se utiliza el imprimirContador
+      //para mostrarlo en el display.
+      contador_primos++;
+      while (!primo(contador_primos))
+      { 
+        contador_primos++;
+      }
+      imprimirContador(contador_primos);
+    }
+    else if (pressed == RESTA_PULSADOR)
+    {
+      contador_primos--;
+      while (!primo(contador_primos))
+      { 
+        contador_primos--;
+      }
+      imprimirContador(contador_primos);
+    }
   }
-    imprimirContador(contador_primos);
-    
-  }
-    
 }
-  
-}
-
+//Función para detectar cuando es un número primo
 bool primo(int digito) {
+  //Si el dígito es menor o igual a 1, se retorna falso
+  //Cualquier numero menor o igual a 1 no es primo.
   if (digito <= 1) {
     return false;
   }
+  //Si el valor de digito es divisible por i sin dejar resto
+  //devuelve falso, ya que no es un número primo.
   for (int i = 2; i * i <= digito; i++) {
     if (digito % i == 0) {
       return false;
     }
   }
-  return true;
+  return true;//Cuando ya encuentra un número primo.
 }
 
 
@@ -109,11 +124,11 @@ bool primo(int digito) {
 //Pulsación de botones
 int keypressed(void)
 {
-  
+  //Almacena suma y resta
   suma = digitalRead(SUMA_PULSADOR);
   resta = digitalRead(RESTA_PULSADOR);
   
-
+  
   if (suma == 1)
   {
  	suma_anterior = 1;  
@@ -122,10 +137,8 @@ int keypressed(void)
   {
  	resta_anterior = 1;  
   }
-  if (reinicio == 1)
-  {
- 	reinicio_anterior = 1;  
-  }
+  //Se verifica el estado de os botones.
+  
   if(suma == 0 & suma != suma_anterior)
   {
   	suma_anterior = suma;
@@ -136,8 +149,9 @@ int keypressed(void)
   	resta_anterior = resta;
     return RESTA_PULSADOR;
   }
-  
+  //Si verifica si pasó a estar presionado,
   return 0;
+  //No fue presionado
 }
 
 //Se controla el display de 7 segmentos       
@@ -222,7 +236,7 @@ void mostrarDigito(int digito){
 
   }
 }
-
+//Función que controla cuál de los dos dígitos debe estar encendido
 void prenderDigito(int digito){
   if(digito == decena){
     digitalWrite(unidad,HIGH);
@@ -240,12 +254,15 @@ void prenderDigito(int digito){
 }
 
 }
+//Muestra un número de dos digitos en un display.
 void imprimirContador (int contador){
  
   prenderDigito(ALLOF);//APAGA LAS DOS
-  mostrarDigito(contador/10);//78 / 10 = 7.8
-  prenderDigito(decena);
+  mostrarDigito(contador/10);//78 / 10 = 7.8. 
+  //Calcula el dígito de las decenas dividiendo el contador por 10
+  prenderDigito(decena);//Se asegura que el dígito de las decenas se encienda en el display
   prenderDigito(ALLOF);
-  mostrarDigito(contador - (int(contador/10)*10)); //78 - (int(contador/10)*10)
-  prenderDigito(unidad);
+  mostrarDigito(contador - (int(contador/10)*10)); //78 - (int(contador/10)*10) 
+  //Calcula el dígito de las unidades tomando el valor del contador y restando el valor del dígito de las decenas
+  prenderDigito(unidad);//Lo mismo, solo que prende la unidad.
 }
