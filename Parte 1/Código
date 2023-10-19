@@ -48,7 +48,7 @@ void setup(){
 //LOOP
 
 void loop()
-{ 
+{ //Se llama a la función keypressed para verificar si se presionó un botón.
   int pressed = keypressed();
   if(pressed == SUMA_PULSADOR)
   {
@@ -73,7 +73,7 @@ void loop()
    }
   
 
-imprimirContador(contador);
+imprimirContador(contador);//Se usa para mostrar el valor actual del contador
 }
 
 
@@ -200,7 +200,7 @@ void mostrarDigito(int digito){
 
   }
 }
-
+//Función que controla cuál de los dos dígitos debe estar encendido
 void prenderDigito(int digito){
   if(digito == decena){
     digitalWrite(unidad,HIGH);
@@ -218,12 +218,15 @@ void prenderDigito(int digito){
 }
 
 }
+//Muestra un número de dos digitos en un display.
 void imprimirContador (int contador){
  
   prenderDigito(ALLOF);//APAGA LAS DOS
-  mostrarDigito(contador/10);//78 / 10 = 7.8
-  prenderDigito(decena);
+  mostrarDigito(contador/10);//78 / 10 = 7.8. 
+  //Calcula el dígito de las decenas dividiendo el contador por 10
+  prenderDigito(decena);//Se asegura que el dígito de las decenas se encienda en el display
   prenderDigito(ALLOF);
-  mostrarDigito(contador - (int(contador/10)*10)); //78 - (int(contador/10)*10)
-  prenderDigito(unidad);
+  mostrarDigito(contador - (int(contador/10)*10)); //78 - (int(contador/10)*10) 
+  //Calcula el dígito de las unidades tomando el valor del contador y restando el valor del dígito de las decenas
+  prenderDigito(unidad);//Lo mismo, solo que prende la unidad.
 }
